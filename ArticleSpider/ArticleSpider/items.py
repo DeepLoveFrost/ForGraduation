@@ -11,6 +11,8 @@ import datetime
 from scrapy.loader import ItemLoader
 from scrapy.loader.processors import MapCompose, TakeFirst
 
+# 文章保存对象定义
+
 
 class ArticlespiderItem(scrapy.Item):
     # define the fields for your item here like:
@@ -25,6 +27,8 @@ class ArticleItemLoader(ItemLoader):
 
 def date_convert(value):
     try:
+        # string = str(value)
+        # match_re = re.match(".*?(\d+/\d+/\d+).*", str(value))
         create_date = datetime.datetime.strptime(value, "%Y/%m/%d").date()
     except Exception as e:
         create_date = datetime.datetime.now().date()

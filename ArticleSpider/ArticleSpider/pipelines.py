@@ -13,6 +13,7 @@ from twisted.enterprise import adbapi
 from scrapy.exporters import JsonItemExporter
 from scrapy.pipelines.images import ImagesPipeline
 
+# 对文章保存实体处理的相关函数
 
 class ArticlespiderPipeline(object):
     def process_item(self, item, spider):
@@ -23,10 +24,12 @@ class JsonWithEncodingPipeline(object):
     # 自定义json文件的导出
     def __init__(self):
         self.file = codecs.open('article.json', 'w', encoding="utf-8")
+
     def process_item(self, item, spider):
         lines = json.dumps(dict(item), ensure_ascii=False) + "\n"
         self.file.write(lines)
         return item
+
     def spider_closed(self, spider):
         self.file.close()
 
@@ -87,9 +90,11 @@ class MysqlTwistedPipline(object):
 
 class ArticleImagePipeline(ImagesPipeline):
     def item_completed(self, results, item, info):
-        if "front_image_url" in item:
-            for ok, value in results:
-                image_file_path = value["path"]
-            item["front_image_path"] = image_file_path
-
+        try:
+            if "front_image_url" in item:
+                for ok, value in results:
+                    image_file_path = value["path"]
+                item["front_image_path"] = image_file_path
+        except Exception as e:
+            print("error")
         return item
